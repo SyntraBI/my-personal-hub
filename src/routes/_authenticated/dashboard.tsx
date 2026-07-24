@@ -117,7 +117,7 @@ function Dashboard() {
                   style={{ height: `${(d.count / max) * 100}%`, minHeight: 4 }}
                   title={`${d.count} notes`}
                 />
-                <div className="text-[10px] text-muted-foreground">{format(d.day, "EEE")}</div>
+                <div className="text-[10px] text-muted-foreground">{formatIST(d.day, "EEE")}</div>
               </div>
             ))}
           </div>
