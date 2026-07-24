@@ -80,7 +80,7 @@ function CalendarPage() {
                 <div className="flex-1 min-w-0">
                   <div className="text-sm truncate">{r.title}</div>
                   <div className="text-xs text-muted-foreground">
-                    {relativeDay(new Date(r.due_at))} · {format(new Date(r.due_at), "p")} ·{" "}
+                    {relativeDay(new Date(r.due_at))} · {formatIST(new Date(r.due_at), "p")} ·{" "}
                     {formatDistanceToNow(new Date(r.due_at), { addSuffix: true })}
                   </div>
                 </div>
@@ -138,16 +138,16 @@ function CalendarPage() {
               <li key={e.id} className="rounded-xl border bg-card p-4 flex gap-3">
                 <div className="text-center shrink-0 border rounded-lg px-3 py-2">
                   <div className="text-[10px] uppercase text-muted-foreground">
-                    {format(new Date(e.starts_at), "MMM")}
+                    {formatIST(new Date(e.starts_at), "MMM")}
                   </div>
                   <div className="text-lg font-semibold">
-                    {format(new Date(e.starts_at), "d")}
+                    {formatIST(new Date(e.starts_at), "d")}
                   </div>
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium truncate">{e.title}</div>
                   <div className="text-xs text-muted-foreground">
-                    {format(new Date(e.starts_at), "EEE p")}
+                    {formatIST(new Date(e.starts_at), "EEE p")}
                   </div>
                   {e.notes && (
                     <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{e.notes}</p>
