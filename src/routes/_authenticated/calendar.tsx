@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { format, isToday, isTomorrow, formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
+import { formatIST, isTodayIST, isTomorrowIST } from "@/lib/tz";
 import { Check, Trash2, Bell, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { bucketColor, bucketLabel } from "@/lib/buckets";
