@@ -6,6 +6,7 @@ import { formatIST, isTodayIST, isTomorrowIST } from "@/lib/tz";
 import { Check, Trash2, Bell, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { bucketColor, bucketLabel } from "@/lib/buckets";
+import { CalendarView, type CalendarItem } from "@/components/CalendarView";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/calendar")({
@@ -52,6 +53,23 @@ function CalendarPage() {
     qc.invalidateQueries({ queryKey: ["events"] });
   }
 
+  const calendarItems: CalendarItem[] = [
+    ...(reminders.data ?? []).map((r) => ({
+      id: `r-${r.id}`,
+      title: r.title,
+      when: r.due_at,
+      kind: "reminder" as const,
+      bucket: r.bucket,
+    })),
+    ...(events.data ?? []).map((e) => ({
+      id: `e-${e.id}`,
+      title: e.title,
+      when: e.starts_at,
+      kind: "event" as const,
+      bucket: e.bucket,
+    })),
+  ];
+
   return (
     <div className="space-y-8">
       <div>
@@ -60,6 +78,9 @@ function CalendarPage() {
           Reminders and events — say "remind me tomorrow at 9" to add one.
         </p>
       </div>
+
+      <CalendarView items={calendarItems} />
+
 
       <section>
         <div className="flex items-center gap-2 mb-3">
