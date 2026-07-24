@@ -14,9 +14,9 @@ export const Route = createFileRoute("/_authenticated/calendar")({
 });
 
 function relativeDay(d: Date) {
-  if (isToday(d)) return "Today";
-  if (isTomorrow(d)) return "Tomorrow";
-  return format(d, "EEE, MMM d");
+  if (isTodayIST(d)) return "Today";
+  if (isTomorrowIST(d)) return "Tomorrow";
+  return formatIST(d, "EEE, MMM d");
 }
 
 function CalendarPage() {
