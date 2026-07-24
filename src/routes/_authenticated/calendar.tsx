@@ -6,6 +6,7 @@ import { formatIST, isTodayIST, isTomorrowIST } from "@/lib/tz";
 import { Check, Trash2, Bell, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { bucketColor, bucketLabel } from "@/lib/buckets";
+import { CalendarView, type CalendarItem } from "@/components/CalendarView";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/calendar")({
