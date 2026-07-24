@@ -17,23 +17,48 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
+// Map a username (like "admin") to a synthetic email Supabase can store.
+function toEmail(idOrEmail: string) {
+  const v = idOrEmail.trim();
+  if (v.includes("@")) return v.toLowerCase();
+  return `${v.toLowerCase()}@mind.local`;
+}
+
 function AuthPage() {
   const navigate = useNavigate();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [identifier, setIdentifier] = useState("admin");
+  const [password, setPassword] = useState("123456");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/dashboard" });
+      if (data.session) navigate({ to: "/dashboard", replace: true });
     });
   }, [navigate]);
+
+  async function signInOrCreate(email: string, pwd: string) {
+    const { error } = await supabase.auth.signInWithPassword({ email, password: pwd });
+    if (!error) return;
+    // If credentials invalid (e.g. account doesn't exist yet), try to create it then sign in.
+    const msg = error.message.toLowerCase();
+    const missing = msg.includes("invalid login") || msg.includes("invalid credentials");
+    if (!missing) throw error;
+    const { error: signUpErr } = await supabase.auth.signUp({
+      email,
+      password: pwd,
+      options: { emailRedirectTo: window.location.origin },
+    });
+    if (signUpErr && !signUpErr.message.toLowerCase().includes("registered")) throw signUpErr;
+    const { error: retryErr } = await supabase.auth.signInWithPassword({ email, password: pwd });
+    if (retryErr) throw retryErr;
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     try {
+      const email = toEmail(identifier);
       if (mode === "signup") {
         const { error } = await supabase.auth.signUp({
           email,
@@ -41,12 +66,9 @@ function AuthPage() {
           options: { emailRedirectTo: window.location.origin },
         });
         if (error) throw error;
-        toast.success("Check your email to confirm — or sign in if confirmation is off.");
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        navigate({ to: "/dashboard" });
       }
+      await signInOrCreate(email, password);
+      navigate({ to: "/dashboard", replace: true });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -67,19 +89,20 @@ function AuthPage() {
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
             {mode === "signin"
-              ? "Sign in to your personal space."
+              ? "Sign in with your user ID or email."
               : "Your notes, reminders and vault — all yours."}
           </p>
           <form onSubmit={onSubmit} className="mt-6 space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="identifier">User ID or email</Label>
               <Input
-                id="email"
-                type="email"
+                id="identifier"
+                type="text"
                 required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                autoComplete="email"
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
+                autoComplete="username"
+                placeholder="admin"
               />
             </div>
             <div className="space-y-2">
@@ -98,10 +121,13 @@ function AuthPage() {
               {loading ? "…" : mode === "signin" ? "Sign in" : "Create account"}
             </Button>
           </form>
+          <p className="mt-3 text-[11px] text-muted-foreground text-center">
+            Default: <span className="font-mono">admin</span> / <span className="font-mono">123456</span>
+          </p>
           <button
             type="button"
             onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-            className="mt-4 text-xs text-muted-foreground hover:text-foreground w-full text-center"
+            className="mt-3 text-xs text-muted-foreground hover:text-foreground w-full text-center"
           >
             {mode === "signin" ? "New here? Create an account" : "Already have an account? Sign in"}
           </button>
