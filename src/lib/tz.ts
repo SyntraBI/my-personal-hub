@@ -23,6 +23,12 @@ export function toIST(d: Date | string | number): Date {
   return new Date(Date.UTC(y, m - 1, day, h, mi, s));
 }
 
+/** YYYY-MM-DD in IST — useful as a map key for calendar day cells. */
+export function dayKeyIST(d: Date | string | number): string {
+  const { y, m, d: day } = parts(d instanceof Date ? d : new Date(d));
+  return `${y}-${String(m).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const DOW_LONG = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
