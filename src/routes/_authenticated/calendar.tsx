@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { format, isToday, isTomorrow, formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
+import { formatIST, isTodayIST, isTomorrowIST } from "@/lib/tz";
 import { Check, Trash2, Bell, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { bucketColor, bucketLabel } from "@/lib/buckets";
@@ -13,9 +14,9 @@ export const Route = createFileRoute("/_authenticated/calendar")({
 });
 
 function relativeDay(d: Date) {
-  if (isToday(d)) return "Today";
-  if (isTomorrow(d)) return "Tomorrow";
-  return format(d, "EEE, MMM d");
+  if (isTodayIST(d)) return "Today";
+  if (isTomorrowIST(d)) return "Tomorrow";
+  return formatIST(d, "EEE, MMM d");
 }
 
 function CalendarPage() {
@@ -79,7 +80,7 @@ function CalendarPage() {
                 <div className="flex-1 min-w-0">
                   <div className="text-sm truncate">{r.title}</div>
                   <div className="text-xs text-muted-foreground">
-                    {relativeDay(new Date(r.due_at))} · {format(new Date(r.due_at), "p")} ·{" "}
+                    {relativeDay(new Date(r.due_at))} · {formatIST(new Date(r.due_at), "p")} ·{" "}
                     {formatDistanceToNow(new Date(r.due_at), { addSuffix: true })}
                   </div>
                 </div>
@@ -137,16 +138,16 @@ function CalendarPage() {
               <li key={e.id} className="rounded-xl border bg-card p-4 flex gap-3">
                 <div className="text-center shrink-0 border rounded-lg px-3 py-2">
                   <div className="text-[10px] uppercase text-muted-foreground">
-                    {format(new Date(e.starts_at), "MMM")}
+                    {formatIST(new Date(e.starts_at), "MMM")}
                   </div>
                   <div className="text-lg font-semibold">
-                    {format(new Date(e.starts_at), "d")}
+                    {formatIST(new Date(e.starts_at), "d")}
                   </div>
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium truncate">{e.title}</div>
                   <div className="text-xs text-muted-foreground">
-                    {format(new Date(e.starts_at), "EEE p")}
+                    {formatIST(new Date(e.starts_at), "EEE p")}
                   </div>
                   {e.notes && (
                     <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{e.notes}</p>

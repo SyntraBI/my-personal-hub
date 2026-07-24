@@ -3,7 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { BUCKETS, bucketColor, bucketLabel } from "@/lib/buckets";
 import { StickyNote, Bell, CalendarDays, KeyRound } from "lucide-react";
-import { format, formatDistanceToNow, startOfDay, subDays } from "date-fns";
+import { formatDistanceToNow, startOfDay, subDays } from "date-fns";
+import { formatIST } from "@/lib/tz";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — Mind" }] }),
@@ -81,7 +82,7 @@ function Dashboard() {
       <div>
         <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">Dashboard</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          {format(new Date(), "EEEE, MMMM d")} — here's your day.
+          {formatIST(new Date(), "EEEE, MMMM d")} — here's your day.
         </p>
       </div>
 
@@ -116,7 +117,7 @@ function Dashboard() {
                   style={{ height: `${(d.count / max) * 100}%`, minHeight: 4 }}
                   title={`${d.count} notes`}
                 />
-                <div className="text-[10px] text-muted-foreground">{format(d.day, "EEE")}</div>
+                <div className="text-[10px] text-muted-foreground">{formatIST(d.day, "EEE")}</div>
               </div>
             ))}
           </div>

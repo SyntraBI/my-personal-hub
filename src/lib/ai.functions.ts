@@ -28,7 +28,12 @@ export const routeAndSave = createServerFn({ method: "POST" })
     if (!key) throw new Error("Lovable AI is not configured");
 
     const now = new Date().toISOString();
-    const system = `You are a personal assistant classifier. Given the user's spoken/typed input, classify it as a note, reminder, or event and pick a bucket. Today is ${now}. Resolve relative dates (e.g. "tomorrow", "next Monday at 9", "on 25th") to full ISO 8601 timestamps in UTC. Reminders MUST include due_at. Events MUST include starts_at. Notes just need content. Keep title short (<60 chars). Buckets: personal, health, professional, ideas, finance, other.${
+    const nowIST = new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Asia/Kolkata",
+      dateStyle: "full",
+      timeStyle: "long",
+    }).format(new Date());
+    const system = `You are a personal assistant classifier. Given the user's spoken/typed input, classify it as a note, reminder, or event and pick a bucket. The user is in India Standard Time (IST, Asia/Kolkata, UTC+05:30). Current time in IST is ${nowIST}. Current UTC time is ${now}. Interpret ALL relative dates and clock times ("9", "tomorrow at 9", "next Monday", "on 25th") as IST wall-clock times, then convert to UTC ISO 8601 for the output timestamps. Reminders MUST include due_at. Events MUST include starts_at. Notes just need content. Keep title short (<60 chars). Buckets: personal, health, professional, ideas, finance, other.${
       data.forcedType !== "auto" ? ` FORCE type = ${data.forcedType}.` : ""
     }${data.forcedBucket ? ` FORCE bucket = ${data.forcedBucket}.` : ""}`;
 
