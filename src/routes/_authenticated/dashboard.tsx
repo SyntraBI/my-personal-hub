@@ -3,7 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { BUCKETS, bucketColor, bucketLabel } from "@/lib/buckets";
 import { StickyNote, Bell, CalendarDays, KeyRound } from "lucide-react";
-import { format, formatDistanceToNow, startOfDay, subDays } from "date-fns";
+import { formatDistanceToNow, startOfDay, subDays } from "date-fns";
+import { formatIST } from "@/lib/tz";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — Mind" }] }),
