@@ -75,8 +75,8 @@ function VaultPage() {
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">Vault</h1>
-          <p className="text-sm text-muted-foreground mt-1 max-w-md">
+          <h1 className="font-display text-4xl md:text-5xl">Vault</h1>
+          <p className="text-sm text-muted-foreground mt-2 max-w-md">
             Private credentials, encrypted at rest by your backend. Only you can read them.
           </p>
         </div>
