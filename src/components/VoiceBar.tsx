@@ -39,7 +39,7 @@ export function VoiceBar() {
     const rec = new SR();
     rec.continuous = false;
     rec.interimResults = true;
-    rec.lang = "en-US";
+    rec.lang = "en-IN";
     rec.onresult = (e: any) => {
       let out = "";
       for (let i = e.resultIndex; i < e.results.length; i++) out += e.results[i][0].transcript;
@@ -92,15 +92,26 @@ export function VoiceBar() {
   }
 
   return (
-    <div className="sticky bottom-0 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/70">
+    <div className="sticky bottom-0 border-t border-border/60 bg-background/80 backdrop-blur-xl z-30">
+      {listening && (
+        <div className="absolute inset-x-0 -top-px h-px bg-gradient-primary animate-pulse" />
+      )}
       <div className="max-w-5xl mx-auto px-4 md:px-8 py-3">
-        <div className="flex items-center gap-2">
+        <div
+          className={cn(
+            "flex items-center gap-2 rounded-2xl border border-border/60 bg-card/60 backdrop-blur-xl p-1.5 transition-all",
+            listening && "shadow-glow border-primary/50",
+          )}
+        >
           <Button
             type="button"
-            variant={listening ? "default" : "outline"}
+            variant={listening ? "default" : "ghost"}
             size="icon"
             onClick={toggleMic}
-            className={cn(listening && "animate-pulse")}
+            className={cn(
+              "rounded-xl shrink-0",
+              listening && "bg-gradient-primary text-primary-foreground animate-pulse shadow-glow",
+            )}
             aria-label="Toggle microphone"
           >
             {listening ? <MicOff className="size-4" /> : <Mic className="size-4" />}
@@ -113,12 +124,12 @@ export function VoiceBar() {
             onKeyDown={(e) => {
               if (e.key === "Enter") submit();
             }}
-            className="flex-1"
+            className="flex-1 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none px-2"
           />
 
-          <div className="hidden sm:flex items-center gap-2">
+          <div className="hidden sm:flex items-center gap-1.5">
             <Select value={forcedType} onValueChange={(v) => setForcedType(v as ForcedType)}>
-              <SelectTrigger className="w-[120px]">
+              <SelectTrigger className="w-[110px] border-border/60 bg-background/50">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -134,7 +145,7 @@ export function VoiceBar() {
             </Select>
 
             <Select value={forcedBucket} onValueChange={setForcedBucket}>
-              <SelectTrigger className="w-[140px]">
+              <SelectTrigger className="w-[130px] border-border/60 bg-background/50">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -148,7 +159,12 @@ export function VoiceBar() {
             </Select>
           </div>
 
-          <Button onClick={submit} disabled={busy || !text.trim()} size="icon">
+          <Button
+            onClick={submit}
+            disabled={busy || !text.trim()}
+            size="icon"
+            className="rounded-xl bg-gradient-primary text-primary-foreground border-0 shadow-glow shrink-0"
+          >
             {busy ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
           </Button>
         </div>
