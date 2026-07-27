@@ -73,8 +73,8 @@ function CalendarPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">Calendar</h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        <h1 className="font-display text-4xl md:text-5xl">Calendar</h1>
+        <p className="text-sm text-muted-foreground mt-2">
           Reminders and events — say "remind me tomorrow at 9" to add one.
         </p>
       </div>
